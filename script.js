@@ -17,6 +17,7 @@ class Particle {
     this.effect = effect;
     this.x = Math.floor(Math.random() * this.effect.width);
     this.y = Math.floor(Math.random() * this.effect.height);
+    this.angle = 0;
     this.speedX = Math.random() * 5 - 2.5;
     this.speedY = Math.random() * 5 - 2.5;
     this.history = [{ x: this.x, y: this.y }];
@@ -34,8 +35,9 @@ class Particle {
   }
 
   update() {
-    this.x += this.speedX + Math.random() * 10 - 5;
-    this.y += this.speedY + Math.random() * 10 - 5;
+    this.angle += 0.5;
+    this.x += this.speedX + Math.sin(this.angle) * 3;
+    this.y += this.speedY + Math.cos(this.angle) * 3;
     this.history.push({ x: this.x, y: this.y });
 
     if (this.history.length > this.maxLength) {
@@ -50,14 +52,27 @@ class Effect {
     this.height = height;
     this.particles = [];
     this.numberOfParticles = 50;
+    this.cellSize = 20;
+    this.rows;
+    this.columns;
+    this.flowField = [];
     this.init();
   }
 
   init() {
+    this.rows = Math.floor(this.height / this.cellSize);
+    this.columns = Math.floor(this.width / this.cellSize);
+    this.flowField = [];
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.columns; x++) {
+        let angle = math.cos(x) + Math.sin(y);
+        this.flowField.push(angle);
+      }
+    }
+
     for (let i = 0; i < this.numberOfParticles; i++) {
       this.particles.push(new Particle(this));
     }
-    // this.particles.push(new Particle(this));
   }
 
   render(context) {
@@ -76,7 +91,7 @@ console.log(effect);
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  effect.render(ctx);
+  // effect.render(ctx);
   requestAnimationFrame(animate);
 }
 
