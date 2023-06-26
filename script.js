@@ -20,8 +20,10 @@ class Particle {
     this.angle = 0;
     this.speedX;
     this.speedY;
+    this.speedModifier = Math.floor(Math.random() * 3 + 1);
     this.history = [{ x: this.x, y: this.y }];
     this.maxLength = Math.floor(Math.random() * 200 + 100);
+    this.timer = this.maxLength * 2;
   }
 
   draw(context) {
@@ -35,24 +37,38 @@ class Particle {
   }
 
   update() {
-    let x = Math.floor(this.x / this.effect.cellSize);
-    let y = Math.floor(this.y / this.effect.cellSize);
-    let index = y * this.effect.columns + x;
-    this.angle = this.effect.flowField[index];
+    this.timer--;
+    if (this.timer >= 1) {
+      let x = Math.floor(this.x / this.effect.cellSize);
+      let y = Math.floor(this.y / this.effect.cellSize);
+      let index = y * this.effect.columns + x;
+      this.angle = this.effect.flowField[index];
 
-    this.speedX = Math.cos(this.angle);
-    this.speedY = Math.sin(this.angle);
-    this.x += this.speedX;
-    this.y += this.speedY;
+      this.speedX = Math.cos(this.angle);
+      this.speedY = Math.sin(this.angle);
+      this.x += this.speedX * this.speedModifier;
+      this.y += this.speedY * this.speedModifier;
 
-    // this.angle += 0.5;
-    // this.x += this.speedX + Math.sin(this.angle) * 10;
-    // this.y += this.speedY * Math.cos(this.angle) * 7;
-    this.history.push({ x: this.x, y: this.y });
+      // this.angle += 0.5;
+      // this.x += this.speedX + Math.sin(this.angle) * 10;
+      // this.y += this.speedY * Math.cos(this.angle) * 7;
+      this.history.push({ x: this.x, y: this.y });
 
-    if (this.history.length > this.maxLength) {
+      if (this.history.length > this.maxLength) {
+        this.history.shift();
+      }
+    } else if (this.history.length > 1) {
       this.history.shift();
+    } else {
+      this.reset();
     }
+  }
+
+  reset() {
+    this.x = Math.floor(Math.random() * this.effect.width);
+    this.y = Math.floor(Math.random() * this.effect.height);
+    this.history = [{ x: this.x, y: this.y }];
+    this.timer = this.maxLength * 2;
   }
 }
 
@@ -76,7 +92,7 @@ class Effect {
     this.flowField = [];
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
-        let angle = (Math.cos(x * this.zoom) + Math.sin(y * this.zoom)) * 0.5;
+        let angle = (Math.cos(x * this.zoom) + Math.sin(y * this.zoom)) * 2.5;
         this.flowField.push(angle);
       }
     }
