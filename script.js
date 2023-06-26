@@ -24,6 +24,7 @@ class Particle {
     this.history = [{ x: this.x, y: this.y }];
     this.maxLength = Math.floor(Math.random() * 200 + 100);
     this.timer = this.maxLength * 2;
+    this.color = "pink";
   }
 
   draw(context) {
@@ -33,6 +34,7 @@ class Particle {
     for (let i = 0; i < this.history.length; i++) {
       context.lineTo(this.history[i].x, this.history[i].y);
     }
+    context.strokeStyle = this.color;
     context.stroke();
   }
 
