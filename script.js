@@ -18,14 +18,14 @@ class Particle {
     this.x = Math.floor(Math.random() * this.effect.width);
     this.y = Math.floor(Math.random() * this.effect.height);
     this.angle = 0;
-    this.speedX = Math.random() * 5 - 2.5;
-    this.speedY = Math.random() * 5 - 2.5;
+    this.speedX;
+    this.speedY;
     this.history = [{ x: this.x, y: this.y }];
-    this.maxLength = Math.floor(Math.random() * 200);
+    this.maxLength = Math.floor(Math.random() * 200 + 100);
   }
 
   draw(context) {
-    context.fillRect(this.x, this.y, 10, 10);
+    // context.fillRect(this.x, this.y, 10, 10);
     context.beginPath();
     context.moveTo(this.history[0].x, this.history[0].y);
     for (let i = 0; i < this.history.length; i++) {
@@ -61,7 +61,8 @@ class Effect {
     this.width = width;
     this.height = height;
     this.particles = [];
-    this.numberOfParticles = 50;
+    this.numberOfParticles = 500;
+    this.zoom = 0.07;
     this.cellSize = 20;
     this.rows;
     this.columns;
@@ -75,7 +76,7 @@ class Effect {
     this.flowField = [];
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
-        let angle = Math.cos(x) + Math.sin(y);
+        let angle = (Math.cos(x * this.zoom) + Math.sin(y * this.zoom)) * 0.5;
         this.flowField.push(angle);
       }
     }
