@@ -77,9 +77,9 @@ class Effect {
     this.width = width;
     this.height = height;
     this.particles = [];
-    this.numberOfParticles = 500;
-    this.zoom = 0.07;
-    this.cellSize = 20;
+    this.numberOfParticles = 1500;
+    this.zoom = 0.11;
+    this.cellSize = 30;
     this.rows;
     this.columns;
     this.flowField = [];
@@ -92,7 +92,7 @@ class Effect {
     this.flowField = [];
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
-        let angle = (Math.cos(x * this.zoom) + Math.sin(y * this.zoom)) * 2.5;
+        let angle = (Math.cos(x * this.zoom) + Math.sin(y * this.zoom)) * 1.6;
         this.flowField.push(angle);
       }
     }
@@ -103,7 +103,26 @@ class Effect {
     }
   }
 
+  drawGrid(context) {
+    context.save();
+    context.lineWidth = 1;
+
+    for (let col = 0; col < this.columns; col++) {
+      context.beginPath();
+      context.moveTo(this.cellSize * col, 0);
+      context.lineTo(this.cellSize * col, this.height);
+      context.stroke();
+    }
+    for (let row = 0; row < this.rows; row++) {
+      context.beginPath();
+      context.moveTo(0, this.cellSize * row);
+      context.lineTo(this.width, this.cellSize * row);
+      context.stroke();
+    }
+  }
+
   render(context) {
+    this.drawGrid(context);
     this.particles.forEach((particle) => {
       particle.draw(context);
       particle.update();
