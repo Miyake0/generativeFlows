@@ -35,9 +35,19 @@ class Particle {
   }
 
   update() {
-    this.angle += 0.5;
-    this.x += this.speedX + Math.sin(this.angle) * 3;
-    this.y += this.speedY + Math.cos(this.angle) * 3;
+    let x = Math.floor(this.x / this.effect.cellSize);
+    let y = Math.floor(this.y / this.effect.cellSize);
+    let index = y * this.effect.columns + x;
+    this.angle = this.effect.flowField[index];
+
+    this.speedX = Math.cos(this.angle);
+    this.speedY = Math.sin(this.angle);
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    // this.angle += 0.5;
+    // this.x += this.speedX + Math.sin(this.angle) * 10;
+    // this.y += this.speedY * Math.cos(this.angle) * 7;
     this.history.push({ x: this.x, y: this.y });
 
     if (this.history.length > this.maxLength) {
@@ -65,10 +75,11 @@ class Effect {
     this.flowField = [];
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
-        let angle = math.cos(x) + Math.sin(y);
+        let angle = Math.cos(x) + Math.sin(y);
         this.flowField.push(angle);
       }
     }
+    console.log(this.flowField);
 
     for (let i = 0; i < this.numberOfParticles; i++) {
       this.particles.push(new Particle(this));
@@ -91,7 +102,7 @@ console.log(effect);
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // effect.render(ctx);
+  effect.render(ctx);
   requestAnimationFrame(animate);
 }
 
